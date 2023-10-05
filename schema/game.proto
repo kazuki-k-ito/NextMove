@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-option go_package = "server/pkg/grpc";
+option go_package = "pkg/grpc";
 
 package game;
 
@@ -15,12 +15,11 @@ service GameService {
 
 message Character {
     string userID = 1;
-    message Position{
-        int x = 2;
-        int y = 3;
-        int z = 4;
-    }
-    float rotationZ = 5;
+    float timestamp = 2;
+    float positionX = 3;
+    float positionY = 4;
+    float positionZ = 5;
+    float rotationZ = 6;
 }
 
 message MoveRequest {
