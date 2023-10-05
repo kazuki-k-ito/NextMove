@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "server/pkg/grpc";
+
+package game;
+
+service GameService {
+    // 自身の移動をサーバーに通知する
+	rpc Move (stream MoveRequest) returns (google.protobuf.Empty);
+    // 他のキャラクタの移動をクライアントに通知する
+    rpc MoveServerStream (MoveServerStreamRequest) returns (stream MoveServerStreamResponse);
+}
+
+message Character {
+    string userID = 1;
+    message Position{
+        int x = 2;
+        int y = 3;
+        int z = 4;
+    }
+    float rotationZ = 5;
+}
+
+message MoveRequest {
+    Character character = 1;
+}
+
+message MoveServerStreamRequest {
+    string userID = 1;
+}
+
+message MoveServerStreamResponse {
+	repeated Character characters = 1;
+}
