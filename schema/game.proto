@@ -15,11 +15,11 @@ service GameService {
 
 message Character {
     string userID = 1;
-    float timestamp = 2;
-    float positionX = 3;
-    float positionY = 4;
-    float positionZ = 5;
-    float rotationZ = 6;
+    uint64 timestamp = 2;
+    float  positionX = 3;
+    float  positionY = 4;
+    float  positionZ = 5;
+    float  rotationY = 6;
 }
 
 message MoveRequest {
