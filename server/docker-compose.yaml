@@ -1,0 +1,18 @@
+version: '3'
+services:
+  gameserver:
+    build: .
+    ports:
+      - "127.0.0.1:7777:7777/udp"
+      - "7437:7437"
+
+  sdk-server:
+    image: "us-docker.pkg.dev/agones-images/release/agones-sdk:1.35.0"
+    command: --local -f /gs_config
+    network_mode: service:gameserver # <shared network between sdk and game server>
+    configs:
+      - gs_config
+
+configs:
+  gs_config:
+    file: ./gameserver.yaml

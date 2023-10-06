@@ -20,6 +20,5 @@ FROM gcr.io/distroless/static-debian12:latest
 WORKDIR /
 COPY --from=builder /build/main /main
 USER nonroot
-EXPOSE 28080
 
 CMD [ "/main" ]
