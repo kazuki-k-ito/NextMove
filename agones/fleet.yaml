@@ -1,0 +1,19 @@
+apiVersion: agones.dev/v1
+kind: Fleet
+metadata:
+  name: grpc-game-server
+spec:
+  replicas: 1
+  template:
+    spec:
+      ports:
+        - name: default
+          containerPort: 9357
+        - name: debug
+          containerPort: 28081
+      template:
+        spec:
+          containers:
+            - name: grpc-game-server
+              image: localimage/grpc-server:latest
+              imagePullPolicy: IfNotPresent
