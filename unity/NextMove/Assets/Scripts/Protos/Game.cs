@@ -26,8 +26,8 @@ namespace Game {
           string.Concat(
             "CgpnYW1lLnByb3RvEgRnYW1lGhtnb29nbGUvcHJvdG9idWYvZW1wdHkucHJv",
             "dG8iegoJQ2hhcmFjdGVyEg4KBnVzZXJJRBgBIAEoCRIRCgl0aW1lc3RhbXAY",
-            "AiABKAISEQoJcG9zaXRpb25YGAMgASgCEhEKCXBvc2l0aW9uWRgEIAEoAhIR",
-            "Cglwb3NpdGlvbloYBSABKAISEQoJcm90YXRpb25aGAYgASgCIjEKC01vdmVS",
+            "AiABKAQSEQoJcG9zaXRpb25YGAMgASgCEhEKCXBvc2l0aW9uWRgEIAEoAhIR",
+            "Cglwb3NpdGlvbloYBSABKAISEQoJcm90YXRpb25ZGAYgASgCIjEKC01vdmVS",
             "ZXF1ZXN0EiIKCWNoYXJhY3RlchgBIAEoCzIPLmdhbWUuQ2hhcmFjdGVyIikK",
             "F01vdmVTZXJ2ZXJTdHJlYW1SZXF1ZXN0Eg4KBnVzZXJJRBgBIAEoCSI/ChhN",
             "b3ZlU2VydmVyU3RyZWFtUmVzcG9uc2USIwoKY2hhcmFjdGVycxgBIAMoCzIP",
@@ -39,7 +39,7 @@ namespace Game {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Game.Character), global::Game.Character.Parser, new[]{ "UserID", "Timestamp", "PositionX", "PositionY", "PositionZ", "RotationZ" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Game.Character), global::Game.Character.Parser, new[]{ "UserID", "Timestamp", "PositionX", "PositionY", "PositionZ", "RotationY" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Game.MoveRequest), global::Game.MoveRequest.Parser, new[]{ "Character" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Game.MoveServerStreamRequest), global::Game.MoveServerStreamRequest.Parser, new[]{ "UserID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Game.MoveServerStreamResponse), global::Game.MoveServerStreamResponse.Parser, new[]{ "Characters" }, null, null, null, null)
@@ -88,7 +88,7 @@ namespace Game {
       positionX_ = other.positionX_;
       positionY_ = other.positionY_;
       positionZ_ = other.positionZ_;
-      rotationZ_ = other.rotationZ_;
+      rotationY_ = other.rotationY_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -112,10 +112,10 @@ namespace Game {
 
     /// <summary>Field number for the "timestamp" field.</summary>
     public const int TimestampFieldNumber = 2;
-    private float timestamp_;
+    private ulong timestamp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float Timestamp {
+    public ulong Timestamp {
       get { return timestamp_; }
       set {
         timestamp_ = value;
@@ -158,15 +158,15 @@ namespace Game {
       }
     }
 
-    /// <summary>Field number for the "rotationZ" field.</summary>
-    public const int RotationZFieldNumber = 6;
-    private float rotationZ_;
+    /// <summary>Field number for the "rotationY" field.</summary>
+    public const int RotationYFieldNumber = 6;
+    private float rotationY_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float RotationZ {
-      get { return rotationZ_; }
+    public float RotationY {
+      get { return rotationY_; }
       set {
-        rotationZ_ = value;
+        rotationY_ = value;
       }
     }
 
@@ -186,11 +186,11 @@ namespace Game {
         return true;
       }
       if (UserID != other.UserID) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Timestamp, other.Timestamp)) return false;
+      if (Timestamp != other.Timestamp) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PositionX, other.PositionX)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PositionY, other.PositionY)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PositionZ, other.PositionZ)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RotationZ, other.RotationZ)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RotationY, other.RotationY)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -199,11 +199,11 @@ namespace Game {
     public override int GetHashCode() {
       int hash = 1;
       if (UserID.Length != 0) hash ^= UserID.GetHashCode();
-      if (Timestamp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Timestamp);
+      if (Timestamp != 0UL) hash ^= Timestamp.GetHashCode();
       if (PositionX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PositionX);
       if (PositionY != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PositionY);
       if (PositionZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PositionZ);
-      if (RotationZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RotationZ);
+      if (RotationY != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RotationY);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -226,9 +226,9 @@ namespace Game {
         output.WriteRawTag(10);
         output.WriteString(UserID);
       }
-      if (Timestamp != 0F) {
-        output.WriteRawTag(21);
-        output.WriteFloat(Timestamp);
+      if (Timestamp != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(Timestamp);
       }
       if (PositionX != 0F) {
         output.WriteRawTag(29);
@@ -242,9 +242,9 @@ namespace Game {
         output.WriteRawTag(45);
         output.WriteFloat(PositionZ);
       }
-      if (RotationZ != 0F) {
+      if (RotationY != 0F) {
         output.WriteRawTag(53);
-        output.WriteFloat(RotationZ);
+        output.WriteFloat(RotationY);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -260,9 +260,9 @@ namespace Game {
         output.WriteRawTag(10);
         output.WriteString(UserID);
       }
-      if (Timestamp != 0F) {
-        output.WriteRawTag(21);
-        output.WriteFloat(Timestamp);
+      if (Timestamp != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(Timestamp);
       }
       if (PositionX != 0F) {
         output.WriteRawTag(29);
@@ -276,9 +276,9 @@ namespace Game {
         output.WriteRawTag(45);
         output.WriteFloat(PositionZ);
       }
-      if (RotationZ != 0F) {
+      if (RotationY != 0F) {
         output.WriteRawTag(53);
-        output.WriteFloat(RotationZ);
+        output.WriteFloat(RotationY);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -293,8 +293,8 @@ namespace Game {
       if (UserID.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UserID);
       }
-      if (Timestamp != 0F) {
-        size += 1 + 4;
+      if (Timestamp != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Timestamp);
       }
       if (PositionX != 0F) {
         size += 1 + 4;
@@ -305,7 +305,7 @@ namespace Game {
       if (PositionZ != 0F) {
         size += 1 + 4;
       }
-      if (RotationZ != 0F) {
+      if (RotationY != 0F) {
         size += 1 + 4;
       }
       if (_unknownFields != null) {
@@ -323,7 +323,7 @@ namespace Game {
       if (other.UserID.Length != 0) {
         UserID = other.UserID;
       }
-      if (other.Timestamp != 0F) {
+      if (other.Timestamp != 0UL) {
         Timestamp = other.Timestamp;
       }
       if (other.PositionX != 0F) {
@@ -335,8 +335,8 @@ namespace Game {
       if (other.PositionZ != 0F) {
         PositionZ = other.PositionZ;
       }
-      if (other.RotationZ != 0F) {
-        RotationZ = other.RotationZ;
+      if (other.RotationY != 0F) {
+        RotationY = other.RotationY;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -357,8 +357,8 @@ namespace Game {
             UserID = input.ReadString();
             break;
           }
-          case 21: {
-            Timestamp = input.ReadFloat();
+          case 16: {
+            Timestamp = input.ReadUInt64();
             break;
           }
           case 29: {
@@ -374,7 +374,7 @@ namespace Game {
             break;
           }
           case 53: {
-            RotationZ = input.ReadFloat();
+            RotationY = input.ReadFloat();
             break;
           }
         }
@@ -396,8 +396,8 @@ namespace Game {
             UserID = input.ReadString();
             break;
           }
-          case 21: {
-            Timestamp = input.ReadFloat();
+          case 16: {
+            Timestamp = input.ReadUInt64();
             break;
           }
           case 29: {
@@ -413,7 +413,7 @@ namespace Game {
             break;
           }
           case 53: {
-            RotationZ = input.ReadFloat();
+            RotationY = input.ReadFloat();
             break;
           }
         }
