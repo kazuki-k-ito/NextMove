@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "bd2c5260218a13bd96aa242d19d1bdd1b9fa8501"
     },
+    "com.googleforgames.agones": {
+      "version": "https://github.com/googleforgames/agones.git?path=/sdks/unity#v1.35.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "98bd2c5af7f0de512f0939c178f7867217096058"
+    },
     "com.unity.collab-proxy": {
       "version": "2.0.7",
       "depth": 0,
