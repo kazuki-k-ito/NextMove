@@ -11,8 +11,8 @@ type Position struct {
 type Character struct {
 	userID        string
 	position      Position
-	rotationZ     float32
-	syncTimestamp float32
+	rotationY     float32
+	syncTimestamp uint64
 }
 
 type CharacterList struct {
@@ -30,7 +30,7 @@ func (c *CharacterList) GetPbCharactersExceptSelf(userID string) []*gamepb.Chara
 			PositionX: character.position.x,
 			PositionY: character.position.y,
 			PositionZ: character.position.z,
-			RotationZ: character.rotationZ,
+			RotationY: character.rotationY,
 			Timestamp: character.syncTimestamp,
 		})
 	}
@@ -50,7 +50,7 @@ func (c *CharacterList) UpdateCharacter(pbc *gamepb.Character) {
 				y: pbc.GetPositionY(),
 				z: pbc.GetPositionZ(),
 			},
-			rotationZ:     pbc.GetRotationZ(),
+			rotationY:     pbc.GetRotationY(),
 			syncTimestamp: pbc.GetTimestamp(),
 		}
 
@@ -63,6 +63,6 @@ func (c *CharacterList) UpdateCharacter(pbc *gamepb.Character) {
 		y: pbc.GetPositionY(),
 		z: pbc.GetPositionZ(),
 	}
-	character.rotationZ = pbc.GetRotationZ()
+	character.rotationY = pbc.GetRotationY()
 	character.syncTimestamp = pbc.GetTimestamp()
 }

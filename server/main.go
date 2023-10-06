@@ -40,12 +40,12 @@ func (s *gameServer) Move(stream gamepb.GameService_MoveServer) error {
 		}
 		character := req.GetCharacter()
 		log.Printf(
-			"userID: %v, positionX:%v, positionY:%v, positionZ:%v, rotationZ: %v, timestamp:%v",
+			"userID: %v, positionX:%v, positionY:%v, positionZ:%v, rotationY: %v, timestamp:%v",
 			character.GetUserID(),
 			character.GetPositionX(),
 			character.GetPositionY(),
 			character.GetPositionZ(),
-			character.GetRotationZ(),
+			character.GetRotationY(),
 			character.GetTimestamp(),
 		)
 		s.characterList.UpdateCharacter(character)
