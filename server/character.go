@@ -1,6 +1,9 @@
 package main
 
-import gamepb "server/pkg/grpc"
+import (
+	gamepb "server/pkg/grpc"
+	"time"
+)
 
 type Position struct {
 	x float32
@@ -21,10 +24,17 @@ type CharacterList struct {
 
 func (c *CharacterList) GetPbCharactersExceptSelf(userID string) []*gamepb.Character {
 	pbCharacters := make([]*gamepb.Character, 0, len(c.characters))
+	var deletableUserID []string
 	for _, character := range c.characters {
 		if character.userID == userID {
 			continue
 		}
+
+		if character.syncTimestamp <= (uint64)(time.Now().UnixMilli()-10000) {
+			deletableUserID = append(deletableUserID, character.userID)
+			continue
+		}
+
 		pbCharacters = append(pbCharacters, &gamepb.Character{
 			UserID:    character.userID,
 			PositionX: character.position.x,
@@ -34,6 +44,11 @@ func (c *CharacterList) GetPbCharactersExceptSelf(userID string) []*gamepb.Chara
 			Timestamp: character.syncTimestamp,
 		})
 	}
+
+	for _, ID := range deletableUserID {
+		delete(c.characters, ID)
+	}
+
 	return pbCharacters
 }
 

@@ -56,8 +56,7 @@ func (s *gameServer) MoveServerStream(
 	req *gamepb.MoveServerStreamRequest,
 	stream gamepb.GameService_MoveServerStreamServer,
 ) error {
-	resCount := 3
-	for i := 0; i < resCount; i++ {
+	for {
 		if err := stream.Send(&gamepb.MoveServerStreamResponse{
 			Characters: s.characterList.GetPbCharactersExceptSelf(req.GetUserID()),
 		}); err != nil {
@@ -65,7 +64,6 @@ func (s *gameServer) MoveServerStream(
 		}
 		time.Sleep(time.Second * 1)
 	}
-	return nil
 }
 
 func NewGameServer() *gameServer {
