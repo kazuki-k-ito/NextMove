@@ -1,21 +1,30 @@
 using System;
 using System.Text;
+using Agones;
 using Cysharp.Net.Http;
 using Game;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class RequestRunner : MonoBehaviour
 {
+    public GameObject otherCharacterPrefab;
+    
     private AsyncClientStreamingCall<MoveRequest, Empty> _moveCall;
+    private AsyncServerStreamingCall<MoveServerStreamResponse> _moveServerStreamCall;
     private GameService.GameServiceClient _client;
     private string _userId;
+    private AgonesSdk _agones;
+    private float _elapsedTime = 0f;
+    private Dictionary<string, GameObject> _otherCharacters;
     private void Awake()
     {
+        _otherCharacters = new Dictionary<string, GameObject>();
         var channel = GrpcChannel.ForAddress(
-            "http://localhost:7155",
+            "http://localhost:7654",
             new GrpcChannelOptions
             {
                 HttpHandler = new YetAnotherHttpHandler
@@ -24,9 +33,12 @@ public class RequestRunner : MonoBehaviour
                 },
                 DisposeHttpClient = true,
             });
+        _userId = GenerateRandomString(16);
         _client = new GameService.GameServiceClient(channel);
         _moveCall = _client.Move();
-        _userId = GenerateRandomString(16);
+        MoveRequest();
+        _moveServerStreamCall = _client.MoveServerStream(new MoveServerStreamRequest{UserID = _userId});
+        MoveServerStream();
     }
 
     private string GenerateRandomString(int length)
@@ -45,9 +57,12 @@ public class RequestRunner : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
+        _elapsedTime += Time.deltaTime;
+        if (_elapsedTime >= 1.0f)
         {
             MoveRequest();
+            _moveServerStreamCall = _client.MoveServerStream(new MoveServerStreamRequest{UserID = _userId});
+            _elapsedTime = 0.0f;
         }
     }
 
@@ -70,5 +85,45 @@ public class RequestRunner : MonoBehaviour
         });
         
         Debug.Log($"Success Move Request (timestamp:{timestamp} rotation:{t.rotation.eulerAngles})");
+    }
+
+    private async void MoveServerStream()
+    {
+        while (await _moveServerStreamCall.ResponseStream.MoveNext())
+        {
+            var response = _moveServerStreamCall.ResponseStream.Current;
+            
+            if (response == null || response.Characters == null) continue;
+            foreach(var character in response.Characters)
+            {
+                // オブジェクトを生成
+                if (!_otherCharacters.ContainsKey(character.UserID))
+                {
+                    _otherCharacters.Add(
+                        character.UserID,
+                        Instantiate(
+                            otherCharacterPrefab,
+                            new Vector3(character.PositionX, character.PositionY, character.PositionZ),
+                            Quaternion.Euler(new Vector3(0, character.RotationY, 0))
+                            )
+                        );
+                    Debug.Log("生成");
+                }
+                else
+                {
+                    var c = _otherCharacters[character.UserID];
+                    c.transform.position = new Vector3(character.PositionX, character.PositionY, character.PositionZ);
+                    c.transform.rotation = Quaternion.Euler(new Vector3(0, character.RotationY, 0));
+                    Debug.Log("更新");
+                }
+                Debug.Log($"Receive Position. UserID:{character.UserID} Position:{character.PositionX},{character.PositionY},{character.PositionZ} Rotation:{character.RotationY}");
+            }
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        _moveCall.Dispose();
+        _moveServerStreamCall.Dispose();
     }
 }
