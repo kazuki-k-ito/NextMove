@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ade3fa4ab14432fb675b4f9b917af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherCharacterPrefab: {fileID: 6345678391669385091, guid: 3c45c12861e4c4a27b9efb38f5d95f2c, type: 3}
+  otherCharacterPrefab: {fileID: 7766650540146465668, guid: 9ef8c9d506a0b47f9b24b4b8b8f0c0f7, type: 3}
 --- !u!1001 &511098408
 PrefabInstance:
   m_ObjectHideFlags: 0

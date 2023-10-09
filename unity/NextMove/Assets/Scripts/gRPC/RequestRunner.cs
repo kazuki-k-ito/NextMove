@@ -8,9 +8,18 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 
 public class RequestRunner : MonoBehaviour
 {
+    class CharacterInfo
+    {
+        public Vector3 Pos;
+        public Quaternion Rot;
+        public ulong Time;
+        public float rate;
+    }
+    
     public GameObject otherCharacterPrefab;
     
     private AsyncClientStreamingCall<MoveRequest, Empty> _moveCall;
@@ -20,9 +29,11 @@ public class RequestRunner : MonoBehaviour
     private AgonesSdk _agones;
     private float _elapsedTime = 0f;
     private Dictionary<string, GameObject> _otherCharacters;
+    private Dictionary<string, List<CharacterInfo>> _otherCharacterInfo;
     private void Awake()
     {
         _otherCharacters = new Dictionary<string, GameObject>();
+        _otherCharacterInfo = new Dictionary<string, List<CharacterInfo>>();
         var channel = GrpcChannel.ForAddress(
             "http://localhost:7654",
             new GrpcChannelOptions
@@ -58,11 +69,36 @@ public class RequestRunner : MonoBehaviour
     void Update()
     {
         _elapsedTime += Time.deltaTime;
-        if (_elapsedTime >= 1.0f)
+        if (_elapsedTime >= 0.1f)
         {
             MoveRequest();
             _moveServerStreamCall = _client.MoveServerStream(new MoveServerStreamRequest{UserID = _userId});
             _elapsedTime = 0.0f;
+        }
+    }
+    
+    private ulong Milliseconds()
+    {
+        return (ulong) (System.DateTime.UtcNow - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
+    }
+
+    private void FixedUpdate()
+    {
+        foreach (var characterInfo in _otherCharacterInfo)
+        {
+            var character = _otherCharacters[characterInfo.Key];
+            var t = character.transform;
+            if (Vector3.Distance(characterInfo.Value[1].Pos, t.position) <= 0.05f) continue;
+
+            var cOld = characterInfo.Value[0];
+            var cNew = characterInfo.Value[1];
+            var now = Milliseconds();
+            cNew.rate += 0.1f;
+            var rate = cNew.rate;
+            Debug.Log($"rate:{rate} now:{now - 1000} cOldTime:{cOld.Time} cNewTime:{cNew.Time + 1000}");
+            Debug.Log($"cOldPos:{cOld.Pos} cNewPos:{cNew.Pos}");
+            character.transform.rotation = Quaternion.Slerp(t.rotation, cNew.Rot, rate);
+            character.transform.position = Vector3.Lerp( cOld.Pos, cNew.Pos , rate);
         }
     }
 
@@ -70,7 +106,7 @@ public class RequestRunner : MonoBehaviour
     {
         var t = transform;
         var position = t.position;
-        var timestamp = (ulong) (System.DateTime.UtcNow - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
+        var timestamp = Milliseconds();
         await _moveCall.RequestStream.WriteAsync(new MoveRequest
         {
             Character = new Character
@@ -107,13 +143,29 @@ public class RequestRunner : MonoBehaviour
                             Quaternion.Euler(new Vector3(0, character.RotationY, 0))
                             )
                         );
+                    var characterInfo = new CharacterInfo();
+                    characterInfo.Pos = new Vector3(
+                        character.PositionX, character.PositionY, character.PositionZ
+                    );
+                    characterInfo.Rot = Quaternion.Euler(new Vector3(0, character.RotationY, 0));
+                    characterInfo.Time = Milliseconds();
+                    characterInfo.rate = 0.0f;
+                    _otherCharacterInfo.Add(character.UserID, new List<CharacterInfo>(){characterInfo, characterInfo});
                     Debug.Log("生成");
                 }
                 else
                 {
-                    var c = _otherCharacters[character.UserID];
-                    c.transform.position = new Vector3(character.PositionX, character.PositionY, character.PositionZ);
-                    c.transform.rotation = Quaternion.Euler(new Vector3(0, character.RotationY, 0));
+                    var characterInfo = _otherCharacterInfo[character.UserID];
+                    var cNew = new CharacterInfo();
+                    cNew.Pos = new Vector3(
+                        character.PositionX, character.PositionY, character.PositionZ
+                    );
+                    cNew.Rot = Quaternion.Euler(new Vector3(0, character.RotationY, 0));
+                    cNew.Time = character.Timestamp;
+                    cNew.rate = 0.0f;
+                    
+                    characterInfo.Add(cNew);
+                    characterInfo.RemoveAt(0);
                     Debug.Log("更新");
                 }
                 Debug.Log($"Receive Position. UserID:{character.UserID} Position:{character.PositionX},{character.PositionY},{character.PositionZ} Rotation:{character.RotationY}");
